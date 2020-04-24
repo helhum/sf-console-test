@@ -20,6 +20,11 @@ class HiddenInputCommand extends Command
                     InputArgument::REQUIRED,
                     'Password'
                 ),
+                new InputArgument(
+                    'action',
+                    InputArgument::REQUIRED,
+                    'action'
+                ),
             ]
         );
     }
@@ -38,8 +43,21 @@ class HiddenInputCommand extends Command
                     return $password;
                 }
             );
-            $this->passwordAsArgument = false;
             $input->setArgument('password', $password);
+        }
+        if (empty($input->getArgument('action'))) {
+            $action = $io->ask(
+                'What do you want to do',
+                null,
+                function ($action) {
+                    if ($error = $this->validateAction($action)) {
+                        throw new ArgumentValidationFailedException($error);
+                    }
+
+                    return $action;
+                }
+            );
+            $input->setArgument('action', $action);
         }
     }
 
@@ -59,6 +77,15 @@ class HiddenInputCommand extends Command
         }
         if (strlen($password) < 5) {
             return 'Password must have at least 5 characters.';
+        }
+
+        return null;
+    }
+
+    private function validateAction(?string $action): ?string
+    {
+        if (empty($action)) {
+            return 'Action must not be empty.';
         }
 
         return null;
