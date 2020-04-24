@@ -1,0 +1,10 @@
+{
+    "require": {
+        "symfony/console": "^4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Helhum\\SfTest\\": "src"
+        }
+    }
+}
